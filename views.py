@@ -19,6 +19,9 @@ def thread(request, forum, thread):
 	f = get_object_or_404(Forum, slug=forum)
 	t = get_object_or_404(Thread, pk=thread)
 	p = t.post_set.all().order_by('time')
+
+	t.views += 1
+	t.save()
 	
 	return render_to_response('djangoforum/thread.html',
 		RequestContext(request, {

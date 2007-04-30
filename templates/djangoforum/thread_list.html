@@ -1,0 +1,40 @@
+{% extends "forum_base.html" %}
+{% block title %}{{ forum.title }}{% endblock %}
+{% block content %}
+
+<h1>{{ forum.title }}</h1>
+
+<p class='breadcrumbs'><a href='/'>Home</a> &gt; <a href='/forum/'>Forums</a> &gt; <a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a> ({{ forum.threads }} thread{{ forum.threads|pluralize }}, {{ forum.posts }} post{{ forum.posts|pluralize }})</p>
+
+<table id='threadList'>
+
+<tr>
+<th>Thread</th>
+<th>Posts</th>
+<th>Views</th>
+<th>Last Post</th>
+</tr>
+
+{% for t in threads %}
+<tr>
+<td><a href='{{ t.get_absolute_url }}'>{{ t.title }}</a></td>
+<td>{{ t.posts }}</td>
+<td>{{ t.views }}</td>
+<td>{{ t.thread_latest_post.time|timesince }} ago by {{ t.thread_latest_post.author }} (<a href='{{ t.thread_latest_post.get_absolute_url }}'>view</a>)</td>
+</tr>
+{% endfor %}
+</table>
+
+<h2>Create a Thread</h2>
+{% if user.is_authenticated %}
+<form method='post' action='new/'>
+<label for='title'>Title</label> <input type='text' name='title' maxlength='100' /><br />
+<label for='body'>Body</label>
+<textarea name='body' rows='8' cols='50'></textarea>
+<input type='submit' value='Post' />
+</form>
+{% else %}
+<p>Please login to create a thread.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "forum_base.html" %}
+{% block title %}{{ thread.title }} ({{ forum.title }}){% endblock %}
+{% block content %}
+
+<h1>{{ forum.title }}</h1>
+<h2>{{ thread.title }}</h2>
+
+<p class='breadcrumbs'><a href='/'>Home</a> &gt; <a href='/forum/'>Forums</a> &gt; <a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a> &gt; <a href='{{ thread.get_absolute_url }}'>{{ thread.title }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }})</p>
+
+<table id='threadPosts'>
+
+{% for post in posts %}
+
+<tr>
+<th id='post{{ post.id }}'>{{ post.time|timesince }} ago<br />
+<strong>{{ post.author }}</strong></th>
+<td>{{ post.body }}</td>
+</tr>{% endfor %}
+
+</table>
+
+<h2>Post a Reply</h2>
+{% if user.is_authenticated %}
+<form method='post' action='reply/'>
+<textarea name='body' rows='8' cols='50'></textarea>
+<input type='submit' value='Submit' />
+</form>
+{% else %}
+<p>Please login to post a reply.</p>
+{% endif %}
+
+{% endblock %}

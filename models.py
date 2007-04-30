@@ -29,7 +29,7 @@ class Thread(models.Model):
 	thread_latest_post = models.ForeignKey('Post', blank=True, null=True, related_name='thread_latest_post')
 
 	class Meta:
-		ordering = ('sticky', 'thread_latest_post')
+		ordering = ('sticky', '-thread_latest_post')
 
 	def save(self):
 		if not self.id:

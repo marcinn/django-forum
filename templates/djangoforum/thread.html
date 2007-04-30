@@ -1,19 +1,19 @@
 {% extends "forum_base.html" %}
 {% block title %}{{ thread.title }} ({{ forum.title }}){% endblock %}
+
+{% block pagetitle %}{{ forum.title }} &raquo; {{ thread.title }}{% endblock %}
+
+
+{% block breadcrumbs %}&raquo; <a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a> &raquo; <a href='{{ thread.get_absolute_url }}'>{{ thread.title }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }}){% endblock %}
+
 {% block content %}
-
-<h1>{{ forum.title }}</h1>
-<h2>{{ thread.title }}</h2>
-
-<p class='breadcrumbs'><a href='/'>Home</a> &gt; <a href='/forum/'>Forums</a> &gt; <a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a> &gt; <a href='{{ thread.get_absolute_url }}'>{{ thread.title }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }})</p>
-
-<table id='threadPosts'>
+<table id='djangoForumThreadPosts'>
 
 {% for post in posts %}
 
 <tr>
 <th id='post{{ post.id }}'>{{ post.time|timesince }} ago<br />
-<strong>{{ post.author }}</strong></th>
+by <strong>{{ post.author }}</strong></th>
 <td>{{ post.body }}</td>
 </tr>{% endfor %}
 
@@ -22,7 +22,8 @@
 <h2>Post a Reply</h2>
 {% if user.is_authenticated %}
 <form method='post' action='reply/'>
-<textarea name='body' rows='8' cols='50'></textarea>
+<p><label for='body'>Your Post</label>
+<textarea name='body' rows='8' cols='50'></textarea></p>
 <input type='submit' value='Submit' />
 </form>
 {% else %}

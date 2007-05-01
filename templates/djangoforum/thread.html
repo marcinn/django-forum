@@ -14,7 +14,7 @@
 <tr>
 <th style='djangoForumThreadPostDetail' id='post{{ post.id }}'>{{ post.time|timesince }} ago<br />
 by <strong>{{ post.author }}</strong></th>
-<td>{{ post.body }}</td>
+<td>{{ post.body|escape }}</td>
 </tr>{% endfor %}
 
 </table>

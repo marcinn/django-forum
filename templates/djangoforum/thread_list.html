@@ -12,17 +12,17 @@
 
 <tr>
 <th>Thread</th>
-<th>Posts</th>
-<th>Views</th>
-<th>Last Post</th>
+<th style='width: 50px;'>Posts</th>
+<th style='width: 50px;'>Views</th>
+<th style='width: 220px;'>Last Post</th>
 </tr>
 
 {% for t in threads %}
 <tr>
-<td><a href='{{ t.get_absolute_url }}'>{{ t.title }}</a></td>
-<td>{{ t.posts }}</td>
-<td>{{ t.views }}</td>
-<td class='djangoForumThreadLastPost'>{{ t.thread_latest_post.time|timesince }} ago by {{ t.thread_latest_post.author }} (<a href='{{ t.thread_latest_post.get_absolute_url }}'>view</a>)</td>
+<td>{% if t.sticky %}Sticky {% endif %}<a href='{{ t.get_absolute_url }}'>{{ t.title }}</a></td>
+<td style='width: 50px;'>{{ t.posts }}</td>
+<td style='width: 50px;'>{{ t.views }}</td>
+<td style='width: 220px;' class='djangoForumThreadLastPost'>{{ t.thread_latest_post.time|timesince }} ago by {{ t.thread_latest_post.author }} (<a href='{{ t.thread_latest_post.get_absolute_url }}'>view</a>)</td>
 </tr>
 {% endfor %}
 </table>
@@ -31,6 +31,7 @@
 {% if user.is_authenticated %}
 <form method='post' action='new/'>
 <p><label for='title'>Title</label> <input type='text' name='title' maxlength='100' /></p>
+<p><label>Posting As</label><span>{{ user.username }}</span></p>
 <p><label for='body'>Body</label>
 <textarea name='body' rows='8' cols='50'></textarea></p>
 <p><input type='submit' value='Post' /></p>

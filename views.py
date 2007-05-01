@@ -1,7 +1,7 @@
 from djangoforum.models import Forum,Thread,Post
 from datetime import datetime
 from django.shortcuts import get_object_or_404, render_to_response
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect, Http500
 from django.template import RequestContext
 from django import newforms as forms
 
@@ -33,6 +33,8 @@ def thread(request, forum, thread):
 def reply(request, forum, thread):
 	f = get_object_or_404(Forum, slug=forum)
 	t = get_object_or_404(Thread, pk=thread)
+	if t.closed:
+		raise Http500
 	body = request.POST.get('body', False)
 	p = Post(
 		thread=t, 

@@ -20,6 +20,9 @@ by <strong>{{ post.author }}</strong></th>
 </table>
 
 <h2>Post a Reply</h2>
+{% if thread.closed %}
+<p>Sorry, this thread is closed. No further replies are permitted.</p>
+{% else %}
 {% if user.is_authenticated %}
 <form method='post' action='reply/'>
 <p><label>Posting As</label><span>{{ user.username }}</span></p>
@@ -29,6 +32,7 @@ by <strong>{{ post.author }}</strong></th>
 </form>
 {% else %}
 <p>Please login to post a reply.</p>
+{% endif %}
 {% endif %}
 
 {% endblock %}

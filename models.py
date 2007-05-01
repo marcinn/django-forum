@@ -1,8 +1,20 @@
+""" 
+A basic forum model with corresponding thread/post models.
+
+Just about all logic required for smooth updates is in the save() 
+methods. A little extra logic is in views.py.
+"""
+
 from django.db import models
 import datetime
 from django.contrib.auth.models import User
 
 class Forum(models.Model):
+	"""
+	Very basic outline for a Forum, or group of threads. The threads
+	and posts fielsd are updated by the save() methods of their
+	respective models and are used for display purposes.
+	"""
 	title = models.CharField(maxlength=100)
 	slug = models.SlugField()
 	description = models.TextField()
@@ -20,6 +32,13 @@ class Forum(models.Model):
 		return self.title
 
 class Thread(models.Model):
+	"""
+	A Thread belongs in a Forum, and is a collection of posts.
+
+	Threads can be closed or stickied which alter their behaviour 
+	in the thread listings. Again, the posts & views fields are 
+	automatically updated with saving a post or viewing the thread.
+	"""
 	forum = models.ForeignKey(Forum)
 	title = models.CharField(maxlength=100)
 	sticky = models.BooleanField(blank=True, null=True)
@@ -48,6 +67,10 @@ class Thread(models.Model):
 		return self.title
 
 class Post(models.Model):
+	""" 
+	A Post is a User's input to a thread. Uber-basic - the save() 
+	method also updates models further up the heirarchy (Thread,Forum)
+	"""
 	thread = models.ForeignKey(Thread)
 	author = models.ForeignKey(User)
 	body = models.TextField()

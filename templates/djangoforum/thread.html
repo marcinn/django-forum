@@ -4,9 +4,10 @@
 {% block pagetitle %}{{ forum.title }} &raquo; {{ thread.title }}{% endblock %}
 
 
-{% block breadcrumbs %}&raquo; <a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a> &raquo; <a href='{{ thread.get_absolute_url }}'>{{ thread.title }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }}){% endblock %}
+{% block breadcrumbs %}{% for title, url in thread.forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a>{% endfor %} &raquo; <a href='{{ thread.get_absolute_url }}'>{{ thread.title }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }}){% endblock %}
 
 {% block content %}
+
 <table id='djangoForumThreadPosts'>
 
 {% for post in posts %}

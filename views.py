@@ -24,12 +24,11 @@ def forum(request, slug):
             'threads': f.thread_set.all()
         }))
 
-def thread(request, forum, thread):
+def thread(request, thread):
     """
     Increments the viewed count on a thread then displays the 
     posts for that thread, in chronological order.
     """
-    f = get_object_or_404(Forum, slug=forum)
     t = get_object_or_404(Thread, pk=thread)
     p = t.post_set.all().order_by('time')
 
@@ -38,19 +37,18 @@ def thread(request, forum, thread):
     
     return render_to_response('djangoforum/thread.html',
         RequestContext(request, {
-            'forum': f,
+            'forum': t.forum,
             'thread': t,
             'posts': p,
         }))
 
-def reply(request, forum, thread):
+def reply(request, thread):
     """
     If a thread isn't closed, and the user is logged in, post a reply
     to a thread. Note we don't have "nested" replies at this stage.
     """
     if not request.user.is_authenticated:
         raise HttpResponseServerError
-    f = get_object_or_404(Forum, slug=forum)
     t = get_object_or_404(Thread, pk=thread)
     if t.closed:
         raise HttpResponseServerError

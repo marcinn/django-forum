@@ -2,11 +2,28 @@
 {% block title %}{{ forum.title }}{% endblock %}
 {% block pagetitle %}{{ forum.title }}{% endblock %}
 
-{% block breadcrumbs %} &raquo; <a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a> ({{ forum.threads }} thread{{ forum.threads|pluralize }}, {{ forum.posts }} post{{ forum.posts|pluralize }}){% endblock %}
+{% block breadcrumbs %} {% for title, url in forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a> {% endfor %} ({{ forum.threads }} thread{{ forum.threads|pluralize }}, {{ forum.posts }} post{{ forum.posts|pluralize }}){% endblock %}
 
 
 {% block content %}
 
+{% if forum.get_all_children %}
+<table id='djangoForumList'>
+<tr>
+<th>Sub-Forum</th>
+<th>Last Post</th>
+</tr>
+
+{% for subforum in forum.get_all_children %}
+<tr>
+<td class='djangoForumListDetails'><p><strong><a href='{{ subforum.get_absolute_url }}'>{{ subforum.title }}</a></strong><br /><span class='djangoForumStats'>{{ subforum.threads }} thread{{ subforum.threads|pluralize }}, {{ subforum.posts }} post{{ subforum.posts|pluralize }}</span></p>
+<p>{{ subforum.description }}</p></td>
+<td class='djangoForumListLastPost'>{% if subforum.forum_latest_post %}{{ subforum.forum_latest_post.time|timesince }} ago by {{ subforum.forum_latest_post.author }} (<a href='{{ subforum.forum_latest_post.get_absolute_url }}'>view</a>){% else %}No Posts{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+<br />
+{% endif %}
 
 <table id='djangoForumThreadList'>
 

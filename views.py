@@ -3,7 +3,7 @@ All forum logic is kept here - displaying lists of forums, threads
 and posts, adding new threads, and adding replies.
 """
 
-from djangoforum.models import Forum,Thread,Post
+from forum.models import Forum,Thread,Post
 from datetime import datetime
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
@@ -18,7 +18,7 @@ def forum(request, slug):
     """
     f = get_object_or_404(Forum, slug=slug)
 
-    return render_to_response('djangoforum/thread_list.html',
+    return render_to_response('forum/thread_list.html',
         RequestContext(request, {
             'forum': f,
             'threads': f.thread_set.all()
@@ -35,7 +35,7 @@ def thread(request, thread):
     t.views += 1
     t.save()
     
-    return render_to_response('djangoforum/thread.html',
+    return render_to_response('forum/thread.html',
         RequestContext(request, {
             'forum': t.forum,
             'thread': t,

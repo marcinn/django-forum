@@ -22,7 +22,7 @@ Current Status
  * Uses Django Admin for maintenance / moderation - no in-line admin.
  * Uses existing django Auth and assumes you already have that up and
    running. I use and recommend django-registration [1]
- * Roll your own site with no work: Install Django, install
+ * Roll your own site with little work: Install Django, install
    django-registration, flatpages, django-forum, setup your templates
    and you have an instant website :)
  * Code is as pulled out of my other projects - changes will be made as I
@@ -34,12 +34,12 @@ Current Status
 Getting Started
 ---------------
 
-   1. Checkout code via SVN
-   2. Rename django-forum to djangoforum; place it in your PYTHONPATH
-   3. Add djangoforum to your INSTALLED_APPS in settings.py
+   1. Checkout code via SVN into your python path.
+       svn co http://django-forum.googlecode.com/svn/turnk/ forum
+   3. Add 'forum' to your INSTALLED_APPS in settings.py
    4. ./manage.py syncdb
    5. Add FORUM_BASE='/forum' to your settings.py (no trailing slash)
-   6. Update urls.py: (r'^forum/', include('djangoforum.urls')),
+   6. Update urls.py: (r'^forum/', include('forum.urls')),
    7. Go to your site admin, add a forum
    8. Browse to yoursite.com/forum/
    9. Enjoy :)

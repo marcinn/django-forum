@@ -25,6 +25,6 @@ urlpatterns = patterns('',
     (r'^(?P<slug>[-\w]+)/$', 'djangoforum.views.forum'),
     (r'^(?P<forum>[-\w]+)/new/$', 'djangoforum.views.newthread'),
 
-    (r'^([-\w]+/)(?P<slug>[-\w]+)/$', 'djangoforum.views.forum'),
-    (r'^([-\w]+/)(?P<forum>[-\w]+)/new/$', 'djangoforum.views.newthread'),
+    (r'^([-\w/]+/)(?P<forum>[-\w]+)/new/$', 'djangoforum.views.newthread'),
+    (r'^([-\w/]+/)(?P<slug>[-\w]+)/$', 'djangoforum.views.forum'),
 )

@@ -7,14 +7,14 @@
 
 {% block content %}
 
-{% if forum.get_all_children %}
+{% if forum.child.all %}
 <table id='djangoForumList'>
 <tr>
 <th>Sub-Forum</th>
 <th>Last Post</th>
 </tr>
 
-{% for subforum in forum.get_all_children %}
+{% for subforum in forum.child.all %}
 <tr>
 <td class='djangoForumListDetails'><p><strong><a href='{{ subforum.get_absolute_url }}'>{{ subforum.title }}</a></strong><br /><span class='djangoForumStats'>{{ subforum.threads }} thread{{ subforum.threads|pluralize }}, {{ subforum.posts }} post{{ subforum.posts|pluralize }}</span></p>
 <p>{{ subforum.description }}</p></td>

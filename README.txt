@@ -35,7 +35,7 @@ Getting Started
 ---------------
 
    1. Checkout code via SVN into your python path.
-       svn co http://django-forum.googlecode.com/svn/turnk/ forum
+       svn co http://django-forum.googlecode.com/svn/trunk/ forum
    3. Add 'forum' to your INSTALLED_APPS in settings.py
    4. ./manage.py syncdb
    5. Add FORUM_BASE='/forum' to your settings.py (no trailing slash)

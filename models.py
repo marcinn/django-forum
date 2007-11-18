@@ -9,6 +9,7 @@ from django.db import models
 import datetime
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 class Forum(models.Model):
     """
@@ -91,8 +92,8 @@ class Forum(models.Model):
         url_list.append(self.get_absolute_url())
         return zip(p_list, url_list)
 
-    def __str__(self):
-        return self.title
+    def __unicode__(self):
+        return u'%s' % self.title
     
     class Meta:
         ordering = ['title',]
@@ -159,8 +160,8 @@ class Thread(models.Model):
     class Admin:
         pass
 
-    def __str__(self):
-        return self.title
+    def __unicode__(self):
+        return u'%s' % self.title
 
 class Post(models.Model):
     """ 
@@ -200,5 +201,5 @@ class Post(models.Model):
     class Admin:
         pass
 
-    def __str__(self):
-        return "%s" % self.id
+    def __unicode__(self):
+        return u"%s" % self.id

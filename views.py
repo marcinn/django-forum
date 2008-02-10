@@ -47,7 +47,7 @@ def reply(request, thread):
     If a thread isn't closed, and the user is logged in, post a reply
     to a thread. Note we don't have "nested" replies at this stage.
     """
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated():
         raise HttpResponseServerError
     t = get_object_or_404(Thread, pk=thread)
     if t.closed:
@@ -70,7 +70,7 @@ def newthread(request, forum):
 
     Only allows a user to post if they're logged in.
     """
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated():
         raise HttpResponseServerError
     f = get_object_or_404(Forum, slug=forum)
     t = Thread(

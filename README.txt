@@ -38,11 +38,11 @@ Getting Started
        svn co http://django-forum.googlecode.com/svn/trunk/ forum
    3. Add 'forum' to your INSTALLED_APPS in settings.py
    4. ./manage.py syncdb
-   5. Add FORUM_BASE='/forum' to your settings.py (no trailing slash)
-   6. Update urls.py: (r'^forum/', include('forum.urls')),
-   7. Go to your site admin, add a forum
-   8. Browse to yoursite.com/forum/
-   9. Enjoy :)
+   5. Update urls.py: (r'^forum/', include('forum.urls')),
+   6. Go to your site admin, add a forum
+   7. Browse to yoursite.com/forum/
+   8. Enjoy :)
 
-Note: You can change FORUM_BASE to any URI you like, as long as it has a 
-leading slash and no trailing slash. Just update urls.py to match.
+Note: The forum software can be at any URI you like, just change the relevant
+urls.py entry. EG replace 'forum/' with '/' to have your forum at the root 
+URI, or 'mysite/community/forum/' - whatever you need.

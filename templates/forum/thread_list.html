@@ -1,5 +1,12 @@
 {% extends "forum_base.html" %}
+
 {% block title %}{{ forum.title }}{% endblock %}
+
+{% block extrahead %}
+<link rel="alternate" type="application/rss+xml" title="{{ forum.title }} Posts via RSS" href="{% url forum_index %}rss/{{ forum.slug }}/" />
+<link rel="alternate" type="application/atom+xml" title="{{ forum.title }} Posts via ATOM" href="{% url forum_index %}atom/{{ forum.slug }}/" />
+{% endblock %}
+
 {% block pagetitle %}{{ forum.title }}{% endblock %}
 
 {% block breadcrumbs %} {% for title, url in forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a> {% endfor %} ({{ forum.threads }} thread{{ forum.threads|pluralize }}, {{ forum.posts }} post{{ forum.posts|pluralize }}){% endblock %}
@@ -36,7 +43,7 @@
 
 {% for t in threads %}
 <tr>
-<td>{% if t.sticky %}Sticky {% endif %}<a href='{{ t.get_absolute_url }}'>{{ t.title }}</a>{% if t.closed %} (Closed){% endif %}</td>
+<td>{% if t.sticky %}Sticky {% endif %}<a href='{{ t.get_absolute_url }}'>{{ t.title|escape }}</a>{% if t.closed %} (Closed){% endif %}</td>
 <td style='width: 50px;'>{{ t.posts }}</td>
 <td style='width: 50px;'>{{ t.views }}</td>
 <td style='width: 220px;' class='djangoForumThreadLastPost'>{{ t.thread_latest_post.time|timesince }} ago by {{ t.thread_latest_post.author }} (<a href='{{ t.thread_latest_post.get_absolute_url }}'>view</a>)</td>

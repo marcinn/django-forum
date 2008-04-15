@@ -20,13 +20,23 @@ class Forum(models.Model):
     All of the parent/child recursion code here is borrowed directly from
     the Satchmo project: http://www.satchmoproject.com/
     """
-    title = models.CharField(maxlength=100)
+    title = models.CharField(max_length=100)
     slug = models.SlugField()
     parent = models.ForeignKey('self', blank=True, null=True, related_name='child')
     description = models.TextField()
     threads = models.IntegerField(default=0)
     posts = models.IntegerField(default=0)
-    forum_latest_post = models.ForeignKey('Post', blank=True, null=True, related_name='forum_latest_post')
+
+    def _get_forum_latest_post(self):
+        """This gets the latest post for the forum"""
+        if not hasattr(self, '__forum_latest_post'):
+            try:
+                self.__forum_latest_post = Post.objects.filter(thread__forum__pk=self.id).latest("time")
+            except Post.DoesNotExist:
+                self.__forum_latest_post = None
+
+        return self.__forum_latest_post
+    forum_latest_post = property(_get_forum_latest_post)
 
     def _recurse_for_parents_slug(self, forum_obj):
         #This is used for the urls
@@ -45,9 +55,10 @@ class Forum(models.Model):
         ordering = ['parent', 'title']
 
     def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
         p_list = self._recurse_for_parents_slug(self)
         p_list.append(self.slug)
-        return '%s/%s/' % (settings.FORUM_BASE, '/'.join (p_list))
+        return '%s%s/' % (reverse('forum_index'), '/'.join (p_list))
 
     def _recurse_for_parents_name(self, forum_obj):
         #This is used for the visual display & save validation
@@ -137,25 +148,43 @@ class Thread(models.Model):
     automatically updated with saving a post or viewing the thread.
     """
     forum = models.ForeignKey(Forum)
-    title = models.CharField(maxlength=100)
+    title = models.CharField(max_length=100)
     sticky = models.BooleanField(blank=True, null=True)
     closed = models.BooleanField(blank=True, null=True)
     posts = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
-    thread_latest_post = models.ForeignKey('Post', blank=True, null=True, related_name='thread_latest_post')
+    latest_post_time = models.DateTimeField(blank=True, null=True)
+
+    def _get_thread_latest_post(self):
+        """This gets the latest post for the thread"""
+        if not hasattr(self, '__thread_latest_post'):
+            try:
+                self.__thread_latest_post = Post.objects.filter(thread__pk=self.id).latest("time")
+            except Post.DoesNotExist:
+                self.__thread_latest_post = None
+
+        return self.__thread_latest_post
+    thread_latest_post = property(_get_thread_latest_post)
 
     class Meta:
-        ordering = ('-sticky', '-thread_latest_post')
+        ordering = ('-sticky', '-latest_post_time')
 
     def save(self):
-        if not self.id:
-            f = Forum.objects.get(id=self.forum.id)
-            f.threads += 1
-            f.save()
+        f = self.forum
+        f.threads = f.thread_set.count()
+        f.save()
         super(Thread, self).save()
+
+    def delete(self):
+        super(Thread, self).delete()
+        f = self.forum
+        f.threads = f.thread_set.count()
+        f.posts = Post.objects.filter(thread__forum__pk=f.id).count()
+        f.save()
     
     def get_absolute_url(self):
-        return '%s/thread/%s/' % (settings.FORUM_BASE, self.id)
+        return ('forum_view_thread', [str(self.id)])
+    get_absolute_url = models.permalink(get_absolute_url)
     
     class Admin:
         pass
@@ -177,20 +206,36 @@ class Post(models.Model):
         new_post = False
         if not self.id:
             self.time = datetime.datetime.now()
-            new_post = True
             
         super(Post, self).save()
 
-        if new_post:
-            t = Thread.objects.get(id=self.thread.id)
-            t.thread_latest_post_id = self.id
-            t.posts += 1
-            t.save()
+        t = self.thread
+        t.latest_post_time = t.post_set.latest('time').time
+        t.posts = t.post_set.count()
+        t.save()
 
-            f = Forum.objects.get(id=self.thread.forum.id)
-            f.forum_latest_post_id = self.id
-            f.posts += 1
-            f.save()
+        f = self.thread.forum
+        f.threads = f.thread_set.count()
+        f.posts = Post.objects.filter(thread__forum__pk=f.id).count()
+        f.save()
+
+    def delete(self):
+        try:
+            latest_post = Post.objects.execlude(pk=self.id).latest('time')
+            latest_post_time = latest_post.time
+        except Post.DoesNotExist:
+            latest_post_time = None
+
+        t = self.thread
+        t.posts = t.post_set.exclude(pk=self.id).count()
+        t.latest_post_time = latest_post_time
+        t.save()
+
+        f = self.thread.forum
+        f.posts = Post.objects.filter(thread__forum__pk=f.id).exclude(pk=self.id).count()
+        f.save()
+
+        super(Post, self).delete()
 
     class Meta:
         ordering = ('-time',)

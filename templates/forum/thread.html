@@ -1,21 +1,21 @@
 {% extends "forum_base.html" %}
-{% block title %}{{ thread.title }} ({{ forum.title }}){% endblock %}
+{% block title %}{{ thread.title|escape }} ({{ forum.title }}){% endblock %}
 
-{% block pagetitle %}{{ forum.title }} &raquo; {{ thread.title }}{% endblock %}
+{% block pagetitle %}{{ forum.title }} &raquo; {{ thread.title|escape }}{% endblock %}
 
 
-{% block breadcrumbs %}{% for title, url in thread.forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a>{% endfor %} &raquo; <a href='{{ thread.get_absolute_url }}'>{{ thread.title }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }}){% endblock %}
+{% block breadcrumbs %}{% for title, url in thread.forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a>{% endfor %} &raquo; <a href='{{ thread.get_absolute_url }}'>{{ thread.title|escape }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }}){% endblock %}
 
 {% block content %}
 
 <table id='djangoForumThreadPosts'>
-
+{% load markup %}
 {% for post in posts %}
 
 <tr>
 <th style='djangoForumThreadPostDetail' id='post{{ post.id }}'>{{ post.time|timesince }} ago<br />
 by <strong>{{ post.author }}</strong></th>
-<td>{{ post.body|escape }}</td>
+<td>{{ post.body|escape|markdown|safe }}</td>
 </tr>{% endfor %}
 
 </table>

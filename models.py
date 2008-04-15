@@ -198,7 +198,7 @@ class Post(models.Model):
     method also updates models further up the heirarchy (Thread,Forum)
     """
     thread = models.ForeignKey(Thread)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, related_name='forum_post_set')
     body = models.TextField()
     time = models.DateTimeField(blank=True, null=True)
 
@@ -248,3 +248,19 @@ class Post(models.Model):
 
     def __unicode__(self):
         return u"%s" % self.id
+
+class Subscription(models.Model):
+    """
+    Allow users to subscribe to threads.
+    """
+    author = models.ForeignKey(User)
+    thread = models.ForeignKey(Thread)
+
+    class Meta:
+        unique_together = (("author", "thread"),)
+    
+    class Admin:
+        list_display = ['author','thread']
+
+    def __unicode__(self):
+        return u"%s to %s" % (self.author, self.thread)

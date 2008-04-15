@@ -20,6 +20,7 @@ by <strong>{{ post.author }}</strong></th>
 
 </table>
 
+<h2><a href="{% url forumsubs %}">Update Subscriptions</a></h2>
 <h2>Post a Reply</h2>
 {% if thread.closed %}
 <p>Sorry, this thread is closed. No further replies are permitted.</p>
@@ -29,6 +30,7 @@ by <strong>{{ post.author }}</strong></th>
 <p><label>Posting As</label><span>{{ user.username }}</span></p>
 <p><label for='body'>Your Post</label>
 <textarea name='body' rows='8' cols='50'></textarea></p>
+<p><label for='subscribe'>Subscribe via email:</label><input type='checkbox' name='subscribe' {% if subscription %}checked{% endif %}/></p>
 <input type='submit' value='Submit' />
 </form>
 {% else %}

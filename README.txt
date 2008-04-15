@@ -46,3 +46,16 @@ Getting Started
 Note: The forum software can be at any URI you like, just change the relevant
 urls.py entry. EG replace 'forum/' with '/' to have your forum at the root 
 URI, or 'mysite/community/forum/' - whatever you need.
+
+Thanks
+------
+
+The following people have contributed code or ideas to this project. Thank 
+you for all of your efforts:
+
+* mandric
+* Eric Moritz
+* A. Alibrahim
+* marinho
+* canburak
+* Erik Wickstrom

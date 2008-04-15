@@ -30,6 +30,8 @@ urlpatterns = patterns('',
     url(r'^thread/(?P<thread>[0-9]+)/$', 'forum.views.thread', name='forum_view_thread'),
     url(r'^thread/(?P<thread>[0-9]+)/reply/$', 'forum.views.reply', name='forum_reply_thread'),
 
+    url(r'^subscriptions/$', 'forum.views.updatesubs', name='forum_subscriptions'),
+
     url(r'^(?P<slug>[-\w]+)/$', 'forum.views.forum', name='forum_thread_list'),
     url(r'^(?P<forum>[-\w]+)/new/$', 'forum.views.newthread', name='forum_new_thread'),
 

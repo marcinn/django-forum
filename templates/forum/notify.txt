@@ -1,0 +1,7 @@
+
+{{ body }}
+
+--
+You received this message because you subscribed to a forum thread at
+{{site.name}}.  Login below to update your subscriptions:
+http://{{site.domain}}{{thread.get_absolute_url}}

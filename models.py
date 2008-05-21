@@ -9,7 +9,7 @@ from django.db import models
 import datetime
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 class Forum(models.Model):
     """
@@ -20,12 +20,12 @@ class Forum(models.Model):
     All of the parent/child recursion code here is borrowed directly from
     the Satchmo project: http://www.satchmoproject.com/
     """
-    title = models.CharField(max_length=100)
-    slug = models.SlugField()
+    title = models.CharField(_("Title"), max_length=100)
+    slug = models.SlugField(_("Slug"))
     parent = models.ForeignKey('self', blank=True, null=True, related_name='child')
-    description = models.TextField()
-    threads = models.IntegerField(default=0)
-    posts = models.IntegerField(default=0)
+    description = models.TextField(_("Description"))
+    threads = models.IntegerField(_("Threads"), default=0)
+    posts = models.IntegerField(_("Posts"), default=0)
 
     def _get_forum_latest_post(self):
         """This gets the latest post for the forum"""
@@ -129,7 +129,7 @@ class Forum(models.Model):
         for child in node.child.all():
             children_list = self._recurse_for_children(child)
             children.append(children_list)
-        return(children)
+        return children
 
     def get_all_children(self):
         """
@@ -137,7 +137,7 @@ class Forum(models.Model):
         """
         children_list = self._recurse_for_children(self)
         flat_list = self._flatten(children_list[1:])
-        return(flat_list)
+        return flat_list
 
 class Thread(models.Model):
     """
@@ -148,12 +148,12 @@ class Thread(models.Model):
     automatically updated with saving a post or viewing the thread.
     """
     forum = models.ForeignKey(Forum)
-    title = models.CharField(max_length=100)
-    sticky = models.BooleanField(blank=True, null=True)
-    closed = models.BooleanField(blank=True, null=True)
-    posts = models.IntegerField(default=0)
-    views = models.IntegerField(default=0)
-    latest_post_time = models.DateTimeField(blank=True, null=True)
+    title = models.CharField(_("Title"), max_length=100)
+    sticky = models.BooleanField(_("Sticky?"), blank=True, null=True)
+    closed = models.BooleanField(_("Closed?"), blank=True, null=True)
+    posts = models.IntegerField(_("Posts"), default=0)
+    views = models.IntegerField(_("Views"), default=0)
+    latest_post_time = models.DateTimeField(_("Latest Post Time"), blank=True, null=True)
 
     def _get_thread_latest_post(self):
         """This gets the latest post for the thread"""
@@ -199,8 +199,8 @@ class Post(models.Model):
     """
     thread = models.ForeignKey(Thread)
     author = models.ForeignKey(User, related_name='forum_post_set')
-    body = models.TextField()
-    time = models.DateTimeField(blank=True, null=True)
+    body = models.TextField(_("Body"))
+    time = models.DateTimeField(_("Time"), blank=True, null=True)
 
     def save(self):
         new_post = False

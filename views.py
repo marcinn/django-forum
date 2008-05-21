@@ -150,7 +150,7 @@ def updatesubs(request):
     Allow users to update their subscriptions all in one shot.
     """
     if not request.user.is_authenticated():
-        return HttpResponseForbidden('Sorry, you need to login.')
+        return HttpResponseForbidden(_('Sorry, you need to login.'))
 
     subs = Subscription.objects.filter(author=request.user)
 

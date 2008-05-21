@@ -1,4 +1,4 @@
-{% extends "forum_base.html" %}
+{% extends "forum_base.html" %}{% load i18n %}
 {% block title %}{{ thread.title|escape }} ({{ forum.title }}){% endblock %}
 
 {% block pagetitle %}{{ forum.title }} &raquo; {{ thread.title|escape }}{% endblock %}

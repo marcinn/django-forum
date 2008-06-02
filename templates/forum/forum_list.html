@@ -11,7 +11,7 @@
 
 {% for forum in object_list %}
 <tr>
-<td class='djangoForumListDetails'><p><strong><a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a></strong><br /><span class='djangoForumStats'>{% blocktrans with forum.threads as thread_count and forum.posts as post_count %}{{ thread_count }} thread, {{ post_count }} posts{% plural %}{{ thread_count }} threads, {{ post_count }} posts{% endblock %}</span></p>
+<td class='djangoForumListDetails'><p><strong><a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a></strong><br /><span class='djangoForumStats'>{% blocktrans with forum.threads as thread_count and forum.posts as post_count %}{{ thread_count }} threads, {{ post_count }} posts{% endblock %}</span></p>
 <p>{{ forum.description }}</p></td>
 <td class='djangoForumListLastPost'>{% if forum.forum_latest_post %}{{ forum.forum_latest_post.time|timesince }} ago by {{ forum.forum_latest_post.author }} (<a href='{{ forum.forum_latest_post.get_absolute_url }}'>{% trans "view" %}</a>){% else %}{% trans "No Posts" %}{% endif %}</td>
 </tr>

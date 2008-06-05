@@ -221,7 +221,7 @@ class Post(models.Model):
 
     def delete(self):
         try:
-            latest_post = Post.objects.execlude(pk=self.id).latest('time')
+            latest_post = Post.objects.exclude(pk=self.id).latest('time')
             latest_post_time = latest_post.time
         except Post.DoesNotExist:
             latest_post_time = None

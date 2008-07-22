@@ -25,9 +25,8 @@ Current Status
  * Roll your own site with little work: Install Django, install
    django-registration, flatpages, django-forum, setup your templates
    and you have an instant website :)
- * Code is as pulled out of my other projects - changes will be made as I
-   go to make sure it's as standalone as possible, right now should be
-   pretty good.
+ * Requires a very recent Django SVN checkout, at least 7971 (1.0 alpha is OK)
+ * Requires python-markdown, and 'django.contrib.markdown' in INSTALLED_APPS.
 
 [1] http://code.google.com/p/django-registration/
 
@@ -59,3 +58,5 @@ you for all of your efforts:
 * marinho
 * canburak
 * Erik Wickstrom
+* Aron Jones
+* Sir Steve H

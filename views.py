@@ -8,7 +8,7 @@ from datetime import datetime
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError, HttpResponseForbidden
 from django.template import RequestContext, Context, loader
-from django import newforms as forms
+from django import forms
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.defaultfilters import striptags, wordwrap

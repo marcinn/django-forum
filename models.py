@@ -50,10 +50,6 @@ class Forum(models.Model):
             p_list.reverse()
         return p_list
 
-    class Admin:
-        list_display = ('title', '_parents_repr')
-        ordering = ['parent', 'title']
-
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
         p_list = self._recurse_for_parents_slug(self)
@@ -186,9 +182,6 @@ class Thread(models.Model):
         return ('forum_view_thread', [str(self.id)])
     get_absolute_url = models.permalink(get_absolute_url)
     
-    class Admin:
-        pass
-
     def __unicode__(self):
         return u'%s' % self.title
 
@@ -243,9 +236,6 @@ class Post(models.Model):
     def get_absolute_url(self):
         return '%s#post%s' % (self.thread.get_absolute_url(), self.id)
     
-    class Admin:
-        pass
-
     def __unicode__(self):
         return u"%s" % self.id
 
@@ -259,8 +249,5 @@ class Subscription(models.Model):
     class Meta:
         unique_together = (("author", "thread"),)
     
-    class Admin:
-        list_display = ['author','thread']
-
     def __unicode__(self):
         return u"%s to %s" % (self.author, self.thread)

@@ -26,7 +26,7 @@ Current Status
    django-registration, flatpages, django-forum, setup your templates
    and you have an instant website :)
  * Requires a very recent Django SVN checkout, at least 7971 (1.0 alpha is OK)
- * Requires python-markdown, and 'django.contrib.markdown' in INSTALLED_APPS.
+ * Requires python-markdown, and 'django.contrib.markup' in INSTALLED_APPS.
 
 [1] http://code.google.com/p/django-registration/
 

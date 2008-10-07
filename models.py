@@ -105,11 +105,11 @@ class Forum(models.Model):
     class Meta:
         ordering = ['title',]
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         p_list = self._recurse_for_parents_name(self)
         if (self.title) in p_list:
             raise validators.ValidationError(_("You must not save a forum in itself!"))
-        super(Forum, self).save()
+        super(Forum, self).save(force_insert, force_update)
 
     def _flatten(self, L):
         """
@@ -165,11 +165,11 @@ class Thread(models.Model):
     class Meta:
         ordering = ('-sticky', '-latest_post_time')
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         f = self.forum
         f.threads = f.thread_set.count()
         f.save()
-        super(Thread, self).save()
+        super(Thread, self).save(force_insert, force_update)
 
     def delete(self):
         super(Thread, self).delete()
@@ -195,12 +195,12 @@ class Post(models.Model):
     body = models.TextField(_("Body"))
     time = models.DateTimeField(_("Time"), blank=True, null=True)
 
-    def save(self):
+    def save(self, force_insert=False, force_update=False):
         new_post = False
         if not self.id:
             self.time = datetime.datetime.now()
             
-        super(Post, self).save()
+        super(Post, self).save(force_insert, force_update)
 
         t = self.thread
         t.latest_post_time = t.post_set.latest('time').time

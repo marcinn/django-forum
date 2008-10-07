@@ -14,6 +14,7 @@ from django.conf import settings
 from django.template.defaultfilters import striptags, wordwrap
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 
 def forum(request, slug):
     """
@@ -160,7 +161,7 @@ def updatesubs(request):
         for s in subs:
             if not str(s.thread.id) in post_keys:
                 s.delete()
-        return HttpResponseRedirect(reverse('forumsubs'))
+        return HttpResponseRedirect(reverse('forum_subscriptions'))
 
     return render_to_response('forum/updatesubs.html',
         RequestContext(request, {

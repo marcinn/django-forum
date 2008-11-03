@@ -10,7 +10,7 @@
 
 <table id='djangoForumThreadPosts'>
 {% load markup %}
-{% for post in posts %}
+{% for post in post_list %}
 
 <tr>
 <th class='djangoForumThreadPostDetail' id='post{{ post.id }}'>{{ post.time|timesince }} ago<br />
@@ -19,6 +19,16 @@ by <strong>{{ post.author }}</strong></th>
 </tr>{% endfor %}
 
 </table>
+
+{% if is_paginated %}
+<ul>
+  <li class="djangoForumPagination"><a href="?page=1">{% trans "First" %}</a></li>
+{% for page_number in paginator.page_range %}
+  <li class="djangoForumPagination"><a href="?page={{ page_number }}">{{ page_number }}</a></li>  
+{% endfor %}
+  <li class="djangoForumPagination"><a href="?page={{ paginator.num_pages }}">{% trans "Last" %}</a></li>  
+</ul>
+{% endif %}
 
 <h2><a href="{% url forum_subscriptions %}">Update Subscriptions</a></h2>
 <h2>Post a Reply</h2>

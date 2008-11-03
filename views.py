@@ -15,7 +15,7 @@ from django.template.defaultfilters import striptags, wordwrap
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-
+from django.views.generic.list_detail import object_list
 def forum(request, slug):
     """
     Displays a list of threads within a forum.
@@ -24,11 +24,14 @@ def forum(request, slug):
     """
     f = get_object_or_404(Forum, slug=slug)
 
-    return render_to_response('forum/thread_list.html',
-        RequestContext(request, {
-            'forum': f,
-            'threads': f.thread_set.all()
-        }))
+    return object_list( request,
+                        queryset=f.thread_set.all(),
+                        paginate_by=10,
+                        template_object_name='thread',
+                        template_name='forum/thread_list.html',
+                        extra_context = {
+                            'forum': f,
+                        })
 
 def thread(request, thread):
     """
@@ -42,13 +45,16 @@ def thread(request, thread):
     t.views += 1
     t.save()
     
-    return render_to_response('forum/thread.html',
-        RequestContext(request, {
-            'forum': t.forum,
-            'thread': t,
-            'posts': p,
-            'subscription': s,
-        }))
+    return object_list( request,
+                        queryset=p,
+                        paginate_by=10,
+                        template_object_name='post',
+                        template_name='forum/thread.html',
+                        extra_context = {
+                            'forum': t.forum,
+                            'thread': t,
+                            'subscription': s,
+                        })
 
 def reply(request, thread):
     """

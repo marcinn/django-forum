@@ -38,9 +38,7 @@ by <strong>{{ post.author }}</strong></th>
 {% if user.is_authenticated %}
 <form method='post' action='reply/'>
 <p><label>Posting As</label><span>{{ user.username }}</span></p>
-<p><label for='id_body'>Your Post</label>
-<textarea name='body' rows='8' cols='50' id='id_body'></textarea></p>
-<p><label for='id_subscribe'>Subscribe via email:</label><input type='checkbox' id='id_subscribe' name='subscribe' {% if subscription %}checked{% endif %}/></p>
+{{ form.as_p }}
 <input type='submit' value='Submit' />
 </form>
 {% else %}

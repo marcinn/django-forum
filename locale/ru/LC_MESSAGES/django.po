@@ -1,0 +1,135 @@
+# Russian translation for django-forum.
+# Copyright (C) 2007, Ross Poulton
+# This file is distributed under the same license as the PACKAGE package.
+# Andy Mikhailenko <neithere@gmail.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-forum\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-10-30 02:58+0000\n"
+"PO-Revision-Date: 2008-10-28 12:26+0500\n"
+"Last-Translator: Andy Mikhailenko <neithere@gmail.com>\n"
+"Language-Team:Andy Mikhailenko <neithere@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: feeds.py:28
+#, python-format
+msgid "%(title)s's Forum: %(forum)s"
+msgstr "%(title)s. ФоÑÑм %(forum)s"
+
+#: feeds.py:32
+#, python-format
+msgid "%(title)s's Forum"
+msgstr "%(title)s. ФоÑÑм"
+
+#: feeds.py:38
+msgid "Latest forum posts"
+msgstr "Ðоследние сообÑения в ÑоÑÑме"
+
+#: models.py:23 models.py:149
+msgid "Title"
+msgstr "Ðаголовок"
+
+#: models.py:24
+msgid "Slug"
+msgstr "Slug"
+
+#: models.py:26
+msgid "Description"
+msgstr "Ðписание"
+
+#: models.py:27 models.py:170
+msgid "Threads"
+msgstr "ТемÑ"
+
+#: models.py:28 models.py:152
+msgid "Posts"
+msgstr "СообÑения"
+
+#: models.py:77
+msgid "Forum parents"
+msgstr "РодиÑелÑские ÑоÑÑмÑ"
+
+#: models.py:107 templates/forum/forum_list.html:8
+msgid "Forum"
+msgstr "ФоÑÑм"
+
+#: models.py:108 templates/forum_base.html:85
+#: templates/forum/forum_list.html:3
+msgid "Forums"
+msgstr "ФоÑÑмÑ"
+
+#: models.py:113
+msgid "You must not save a forum in itself!"
+msgstr "ÐаÑÑÑдниÑелÑно соÑÑаниÑÑ ÑоÑÑм в самого себя!"
+
+#: models.py:150
+msgid "Sticky?"
+msgstr "ÐÑилепиÑÑ?"
+
+#: models.py:151
+msgid "Closed?"
+msgstr "ÐакÑÑÑÑ?"
+
+#: models.py:153
+msgid "Views"
+msgstr "ÐÑосмоÑÑÑ"
+
+#: models.py:154
+msgid "Latest Post Time"
+msgstr "ÐÑемя последнего сообÑения"
+
+#: models.py:169
+msgid "Thread"
+msgstr "Тема"
+
+#: models.py:199
+msgid "Body"
+msgstr "ТексÑ"
+
+#: models.py:200
+msgid "Time"
+msgstr "ÐÑемя"
+
+#: models.py:255
+msgid "Subscription"
+msgstr "Ðодписка"
+
+#: models.py:256
+msgid "Subscriptions"
+msgstr "Ðодписки"
+
+#: views.py:154
+msgid "Sorry, you need to login."
+msgstr "ÐзвиниÑе, Ðам нÑжно войÑи в сисÑемÑ"
+
+#: templates/forum_base.html:85
+msgid "Home"
+msgstr "Ðомой"
+
+#: templates/forum/forum_list.html:9
+msgid "Last Post"
+msgstr "Ðоследнее сообÑение"
+
+#: templates/forum/forum_list.html:14
+#, python-format
+msgid "%(thread_count)s threads, %(post_count)s posts"
+msgstr "%(thread_count)s Ñем, %(post_count)s сообÑений"
+
+#: templates/forum/forum_list.html:17
+msgid "view"
+msgstr "пÑосмоÑÑ"
+
+#: templates/forum/forum_list.html:17
+msgid "No Posts"
+msgstr "СообÑений неÑ"
+
+#: templates/forum/forum_list.html:22
+msgid "Update Subscriptions"
+msgstr "ÐбновиÑÑ подписки"
+
+#~ msgid "Post"
+#~ msgstr "СообÑение"

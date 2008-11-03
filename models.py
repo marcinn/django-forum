@@ -104,6 +104,8 @@ class Forum(models.Model):
     
     class Meta:
         ordering = ['title',]
+        verbose_name = _('Forum')
+        verbose_name_plural = _('Forums')
 
     def save(self, force_insert=False, force_update=False):
         p_list = self._recurse_for_parents_name(self)
@@ -164,6 +166,8 @@ class Thread(models.Model):
 
     class Meta:
         ordering = ('-sticky', '-latest_post_time')
+        verbose_name = _('Thread')
+        verbose_name_plural = _('Threads')
 
     def save(self, force_insert=False, force_update=False):
         f = self.forum
@@ -248,6 +252,8 @@ class Subscription(models.Model):
 
     class Meta:
         unique_together = (("author", "thread"),)
-    
+        verbose_name = _('Subscription')
+        verbose_name_plural = _('Subscriptions')
+
     def __unicode__(self):
         return u"%s to %s" % (self.author, self.thread)

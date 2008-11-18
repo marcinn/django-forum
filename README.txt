@@ -35,7 +35,8 @@ Getting Started
 
    1. Checkout code via SVN into your python path.
        svn co http://django-forum.googlecode.com/svn/trunk/ forum
-   3. Add 'forum' to your INSTALLED_APPS in settings.py
+   3. Add 'forum' to your INSTALLED_APPS in settings.py. Also add 
+       'django.contrib.markup' if you haven't already got it there.
    4. ./manage.py syncdb
    5. Update urls.py: (r'^forum/', include('forum.urls')),
    6. Go to your site admin, add a forum

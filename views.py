@@ -53,7 +53,9 @@ def thread(request, thread):
         return Http404
     
     p = t.post_set.select_related('author').all().order_by('time')
-    s = t.subscription_set.select_related().filter(author=request.user)
+    s = None
+    if request.user.is_authenticated():
+        s = t.subscription_set.select_related().filter(author=request.user)
 
     t.views += 1
     t.save()

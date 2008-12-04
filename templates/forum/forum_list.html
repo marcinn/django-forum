@@ -19,5 +19,5 @@
 </tr>
 {% endfor %}
 </table>
-<p><a href="{% url forum_subscriptions %}">{% trans "Update Subscriptions" %}</a></p>
+{% if request.user.is_authenticated %}<p><a href="{% url forum_subscriptions %}">{% trans "Update Subscriptions" %}</a></p>{% endif %}
 {% endblock %}

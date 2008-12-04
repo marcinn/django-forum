@@ -25,12 +25,15 @@ def forum(request, slug):
     Threads are sorted by their sticky flag, followed by their 
     most recent post.
     """
-    f = get_object_or_404(Forum, slug=slug)
+    try:
+        f = Forum.objects.select_related().get(slug=slug)
+    except Forum.DoesNotExist:
+        return Http404
 
     form = CreateThreadForm()
 
     return object_list( request,
-                        queryset=f.thread_set.all(),
+                        queryset=f.thread_set.select_related().all(),
                         paginate_by=10,
                         template_object_name='thread',
                         template_name='forum/thread_list.html',
@@ -44,9 +47,13 @@ def thread(request, thread):
     Increments the viewed count on a thread then displays the 
     posts for that thread, in chronological order.
     """
-    t = get_object_or_404(Thread, pk=thread)
-    p = t.post_set.all().order_by('time')
-    s = t.subscription_set.filter(author=request.user)
+    try:
+        t = Thread.objects.select_related().get(pk=thread)
+    except Thread.DoesNotExist:
+        return Http404
+    
+    p = t.post_set.select_related('author').all().order_by('time')
+    s = t.subscription_set.select_related().filter(author=request.user)
 
     t.views += 1
     t.save()
@@ -183,7 +190,7 @@ def updatesubs(request):
     if not request.user.is_authenticated():
         return HttpResponseForbidden(_('Sorry, you need to login.'))
 
-    subs = Subscription.objects.filter(author=request.user)
+    subs = Subscription.objects.select_related().filter(author=request.user)
 
     if request.POST:
         # remove the subscriptions that haven't been checked.

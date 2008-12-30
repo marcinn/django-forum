@@ -4,6 +4,7 @@ from forum.models import Forum, Thread, Post, Subscription
 class ForumAdmin(admin.ModelAdmin):
     list_display = ('title', '_parents_repr')
     ordering = ['parent', 'title']
+    prepopulated_fields = {"slug": ("title",)}
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ['author','thread']

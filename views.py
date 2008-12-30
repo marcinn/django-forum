@@ -145,7 +145,15 @@ def reply(request, thread):
 
             return HttpResponseRedirect(p.get_absolute_url())
     else:
-        return HttpResponseNotAllowed(['POST'])
+        form = ReplyForm()
+    
+    return render_to_response('forum/reply.html',
+        RequestContext(request, {
+            'form': form,
+            'forum': t.forum,
+            'thread': t,
+        }))
+
 
 def newthread(request, forum):
     """
@@ -184,6 +192,14 @@ def newthread(request, forum):
                     )
                 s.save()
             return HttpResponseRedirect(t.get_absolute_url())
+    else:
+        form = CreateThreadForm()
+
+    return render_to_response('forum/newthread.html',
+        RequestContext(request, {
+            'form': form,
+            'forum': f,
+        }))
 
 def updatesubs(request):
     """

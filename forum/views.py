@@ -77,10 +77,16 @@ def thread(request, thread):
         initial = {'subscribe': False}
 
     form = ReplyForm(initial=initial)
-    
+
+    page = request.GET.get('page', 1)
+    if page == 'all':
+        paginate_by = None
+    else:
+        paginate_by = FORUM_PAGINATION
+
     return object_list( request,
                         queryset=p,
-                        paginate_by=FORUM_PAGINATION,
+                        paginate_by=paginate_by,
                         template_object_name='post',
                         template_name='forum/thread.html',
                         extra_context = {

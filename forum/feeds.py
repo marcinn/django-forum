@@ -39,7 +39,7 @@ class RssForumFeed(Feed):
 
     def link(self, obj):
         if obj:
-            return obj.get_absolute_url()
+            return obj.get_feed_url()
         else:
             return reverse('forum_index')
 

@@ -21,12 +21,12 @@ by <strong>{{ post.author }}</strong></th>
 </table>
 
 {% if is_paginated %}
-<ul>
-  <li class="djangoForumPagination"><a href="?page=1">{% trans "First" %}</a></li>
+<ul class="djangoForumPagination">
+  <li class="first"><a href="?page=1">{% trans "First" %}</a></li>
 {% for page_number in paginator.page_range %}
-  <li class="djangoForumPagination"><a href="?page={{ page_number }}">{{ page_number }}</a></li>  
+  <li class="numbers"><a href="?page={{ page_number }}">{{ page_number }}</a></li>  
 {% endfor %}
-  <li class="djangoForumPagination"><a href="?page={{ paginator.num_pages }}">{% trans "Last" %}</a></li>  
+  <li class="last"><a href="?page={{ paginator.num_pages }}">{% trans "Last" %}</a></li>  
 </ul>
 {% endif %}
 

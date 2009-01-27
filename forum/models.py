@@ -5,6 +5,7 @@ Just about all logic required for smooth updates is in the save()
 methods. A little extra logic is in views.py.
 """
 
+import os
 from django.db import models
 import datetime
 from django.contrib.auth.models import User
@@ -186,6 +187,9 @@ class Thread(models.Model):
         return ('forum_view_thread', [str(self.id)])
     get_absolute_url = models.permalink(get_absolute_url)
     
+    def get_unpaginated_url(self):
+        return os.path.join(self.get_absolute_url(), "?page=all")
+
     def __unicode__(self):
         return u'%s' % self.title
 
@@ -238,7 +242,10 @@ class Post(models.Model):
         ordering = ('-time',)
         
     def get_absolute_url(self):
-        return '%s#post%s' % (self.thread.get_absolute_url(), self.id)
+        return '%s#post%s' % (self.thread.get_full_url(), self.id)
+
+    def get_feed_url(self):
+        return '%s#post%s' % (self.thread.get_unpaginated_url(), self.id)
     
     def __unicode__(self):
         return u"%s" % self.id

@@ -242,7 +242,7 @@ class Post(models.Model):
         ordering = ('-time',)
         
     def get_absolute_url(self):
-        return '%s#post%s' % (self.thread.get_full_url(), self.id)
+        return '%s#post%s' % (self.thread.get_absolute_url(), self.id)
 
     def get_feed_url(self):
         return '%s#post%s' % (self.thread.get_unpaginated_url(), self.id)

@@ -262,10 +262,6 @@ class Post(models.Model):
         
     def get_absolute_url(self):
         return '%s?page=last#post%s' % (self.thread.get_absolute_url(), self.id)
-        """
-        conflict with svn version - have no idea how to resolve this by now
-        return '%s#post%s' % (self.thread.get_full_url(), self.id)
-        """
 
     def get_feed_url(self):
         return '%s#post%s' % (self.thread.get_unpaginated_url(), self.id)

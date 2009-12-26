@@ -4,8 +4,8 @@
 {% block title %}{% blocktrans with forum.title as title %}New Thread in {{ title }}{% endblocktrans %}{% endblock %}
 
 {% block extrahead %}
-<link rel="alternate" type="application/rss+xml" title="{{ forum.title }} Posts via RSS" href="{% url forum_index %}rss/{{ forum.slug }}/" />
-<link rel="alternate" type="application/atom+xml" title="{{ forum.title }} Posts via ATOM" href="{% url forum_index %}atom/{{ forum.slug }}/" />
+<link rel="alternate" type="application/rss+xml" title="{% blocktrans %}{{ forum.title }} Posts via RSS{% endblocktrans %}" href="{% url forum_index %}rss/{{ forum.slug }}/" />
+<link rel="alternate" type="application/atom+xml" title="{% blocktrans %}{{ forum.title }} Posts via ATOM{% endblocktrans %}" href="{% url forum_index %}atom/{{ forum.slug }}/" />
 {% endblock %}
 
 {% block pagetitle %}{% blocktrans with forum.title as title %}New Thread in {{ title }}{% endblocktrans %}{% endblock %}

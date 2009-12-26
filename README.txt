@@ -47,6 +47,42 @@ Note: The forum software can be at any URI you like, just change the relevant
 urls.py entry. EG replace 'forum/' with '/' to have your forum at the root 
 URI, or 'mysite/community/forum/' - whatever you need.
 
+Note: You can include the forum sitemaps in your main sitemap index.
+Example:
+
+    from forum.urls import sitemap_dict as forum_sitemap
+
+    yoursitemap_dict.update(forum_sitemap)
+
+    urlpatterns = patterns('',
+        (r'^sitemap.xml$', 'django.contrib.sitemaps.views.index', {'sitemaps': yoursitemap_dict}),
+        (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': yoursitemap_dict}),
+    )
+
+Upgrading
+---------
+
+If you've upgraded from an SVN revision prior to r51, you will need to 
+update your database using the following commands:
+
+# MySQL:
+ALTER TABLE forum_post ADD COLUMN body_html longtext;
+ALTER TABLE "forum_forum" ADD COLUMN "ordering" integer NULL;
+
+# Or, PostgreSQL:
+ALTER TABLE "forum_post" ADD COLUMN "body_html" text; # PostgreSQL
+ALTER TABLE "forum_forum" ADD COLUMN "ordering" integer NULL;
+
+Then, from a Python shell:
+
+>>> from markdown import markdown
+>>> from forum.models import Post
+>>> for post in Post.objects.all():
+...     post.body_html = ''
+...     post.save()
+...
+>>> exit()
+
 Thanks
 ------
 
@@ -61,3 +97,6 @@ you for all of your efforts:
 * Erik Wickstrom
 * Aron Jones
 * Sir Steve H
+* xphuture
+* bymenda
+* macmichael01

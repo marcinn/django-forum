@@ -19,6 +19,14 @@ from django.views.generic.list_detail import object_list
 from forum.models import Forum,Thread,Post,Subscription
 from forum.forms import CreateThreadForm, ReplyForm
 
+FORUM_PAGINATION = getattr(settings, 'FORUM_PAGINATION', 10)
+LOGIN_URL = getattr(settings, 'LOGIN_URL', '/accounts/login/')
+
+def forums_list(request):
+    queryset = Forum.objects.for_groups(request.user.groups.all()).filter(parent__isnull=True)
+    return object_list( request,
+                        queryset=queryset)
+
 def forum(request, slug):
     """
     Displays a list of threads within a forum.
@@ -26,19 +34,20 @@ def forum(request, slug):
     most recent post.
     """
     try:
-        f = Forum.objects.select_related().get(slug=slug)
+        f = Forum.objects.for_groups(request.user.groups.all()).select_related().get(slug=slug)
     except Forum.DoesNotExist:
-        return Http404
+        raise Http404
 
     form = CreateThreadForm()
-
+    child_forums = f.child.for_groups(request.user.groups.all())
     return object_list( request,
                         queryset=f.thread_set.select_related().all(),
-                        paginate_by=10,
+                        paginate_by=FORUM_PAGINATION,
                         template_object_name='thread',
                         template_name='forum/thread_list.html',
                         extra_context = {
                             'forum': f,
+                            'child_forums': child_forums,
                             'form': form,
                         })
 
@@ -49,8 +58,10 @@ def thread(request, thread):
     """
     try:
         t = Thread.objects.select_related().get(pk=thread)
+        if not Forum.objects.has_access(t.forum, request.user.groups.all()):
+            raise Http404
     except Thread.DoesNotExist:
-        return Http404
+        raise Http404
     
     p = t.post_set.select_related('author').all().order_by('time')
     s = None
@@ -66,16 +77,10 @@ def thread(request, thread):
         initial = {'subscribe': False}
 
     form = ReplyForm(initial=initial)
-
-    page = request.GET.get('page', 1)
-    if page == 'all':
-        paginate_by = None
-    else:
-        paginate_by = 10
-
+    
     return object_list( request,
                         queryset=p,
-                        paginate_by=paginate_by,
+                        paginate_by=FORUM_PAGINATION,
                         template_object_name='post',
                         template_name='forum/thread.html',
                         extra_context = {
@@ -91,10 +96,12 @@ def reply(request, thread):
     to a thread. Note we don't have "nested" replies at this stage.
     """
     if not request.user.is_authenticated():
-        return HttpResponseServerError()
+        return HttpResponseRedirect('%s?next=%s' % (LOGIN_URL, request.path))
     t = get_object_or_404(Thread, pk=thread)
     if t.closed:
         return HttpResponseServerError()
+    if not Forum.objects.has_access(t.forum, request.user.groups.all()):
+        return HttpResponseForbidden()
 
     if request.method == "POST":
         form = ReplyForm(request.POST)
@@ -120,34 +127,34 @@ def reply(request, thread):
                 if sub:
                     sub.delete()
 
-            # Subscriptions are updated now send mail to all the authors subscribed in
-            # this thread.
-            mail_subject = ''
-            try:
-                mail_subject = settings.FORUM_MAIL_PREFIX 
-            except AttributeError:
-                mail_subject = '[Forum]'
+            if t.subscription_set.count() > 0:
+                # Subscriptions are updated now send mail to all the authors subscribed in
+                # this thread.
+                mail_subject = ''
+                try:
+                    mail_subject = settings.FORUM_MAIL_PREFIX 
+                except AttributeError:
+                    mail_subject = '[Forum]'
 
-            mail_from = ''
-            try:
-                mail_from = settings.FORUM_MAIL_FROM
-            except AttributeError:
-                mail_from = settings.DEFAULT_FROM_EMAIL
+                mail_from = ''
+                try:
+                    mail_from = settings.FORUM_MAIL_FROM
+                except AttributeError:
+                    mail_from = settings.DEFAULT_FROM_EMAIL
 
-            mail_tpl = loader.get_template('forum/notify.txt')
-            c = Context({
-                'body': wordwrap(striptags(body), 72),
-                'site' : Site.objects.get_current(),
-                'thread': t,
-                })
+                mail_tpl = loader.get_template('forum/notify.txt')
+                c = Context({
+                    'body': wordwrap(striptags(body), 72),
+                    'site' : Site.objects.get_current(),
+                    'thread': t,
+                    })
 
-            email = EmailMessage(
-                    subject=mail_subject+' '+striptags(t.title),
-                    body= mail_tpl.render(c),
-                    from_email=mail_from,
-                    to=[mail_from],
-                    bcc=[s.author.email for s in t.subscription_set.all()],)
-            email.send(fail_silently=True)
+                email = EmailMessage(
+                        subject=mail_subject+' '+striptags(t.title),
+                        body= mail_tpl.render(c),
+                        from_email=mail_from,
+                        bcc=[s.author.email for s in t.subscription_set.all()],)
+                email.send(fail_silently=True)
 
             return HttpResponseRedirect(p.get_absolute_url())
     else:
@@ -170,9 +177,12 @@ def newthread(request, forum):
     Only allows a user to post if they're logged in.
     """
     if not request.user.is_authenticated():
-        return HttpResponseServerError()
+        return HttpResponseRedirect('%s?next=%s' % (LOGIN_URL, request.path))
 
     f = get_object_or_404(Forum, slug=forum)
+    
+    if not Forum.objects.has_access(f, request.user.groups.all()):
+        return HttpResponseForbidden()
 
     if request.method == 'POST':
         form = CreateThreadForm(request.POST)
@@ -212,7 +222,7 @@ def updatesubs(request):
     Allow users to update their subscriptions all in one shot.
     """
     if not request.user.is_authenticated():
-        return HttpResponseForbidden(_('Sorry, you need to login.'))
+        return HttpResponseRedirect('%s?next=%s' % (LOGIN_URL, request.path))
 
     subs = Subscription.objects.select_related().filter(author=request.user)
 
@@ -227,5 +237,6 @@ def updatesubs(request):
     return render_to_response('forum/updatesubs.html',
         RequestContext(request, {
             'subs': subs,
+            'next': request.GET.get('next')
         }))
        

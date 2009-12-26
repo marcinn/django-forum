@@ -37,12 +37,9 @@ class RssForumFeed(Feed):
         else:
             return _('Latest forum posts')
 
-    def item_link(self, item):
-        return item.get_feed_url()
-
     def link(self, obj):
         if obj:
-            return obj.get_feed_url()
+            return obj.get_absolute_url()
         else:
             return reverse('forum_index')
 

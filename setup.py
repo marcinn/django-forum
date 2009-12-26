@@ -1,24 +1,37 @@
 from setuptools import setup, find_packages
+import os
+
+version = 'r53'
+
+LONG_DESCRIPTION = """
+============
+Django Forum
+============
+
+This is a very basic forum application that can plug into any
+existing Django installation and use it's existing templates,
+users, and admin interface.
+"""
 
 setup(
     name='django-forum',
-    version='0.1.0',
-    description='Simple Django Forum Component',
-    author='Ross Poulton',
-    author_email='ross.poulton@gmail.com',
-    url='http://code.google.com/p/django-forum/',
-    packages=find_packages(),
+    version=version,
+    description="django-forum",
+    long_description=LONG_DESCRIPTION,
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Framework :: Django',
+        "Programming Language :: Python",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Framework :: Django",
+        "Environment :: Web Environment",
     ],
+    keywords='forum,django',
+    author='Ross Poulton',
+    author_email='ross@rossp.org',
+    url='http://code.google.com/p/django-forum/',
+    license='BSD',
+    packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools'],
-    setup_requires=['setuptools_git'],
 )
+

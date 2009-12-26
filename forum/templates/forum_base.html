@@ -1,8 +1,8 @@
 {% load i18n %}<html>
 <head>
 <title>{% block title %}{% endblock %}</title>
-<link rel="alternate" type="application/rss+xml" title="All Latest Posts via RSS" href="{% url forum_index %}rss/" />
-<link rel="alternate" type="application/atom+xml" title="All Latest Posts via ATOM" href="{% url forum_index %}atom/" />
+<link rel="alternate" type="application/rss+xml" title="{% trans "All Latest Posts via RSS" %}" href="{% url forum_index %}rss/" />
+<link rel="alternate" type="application/atom+xml" title="{% trans "All Latest Posts via ATOM" %}" href="{% url forum_index %}atom/" />
 {% block extrahead %}{% endblock %}
 </head>
 <style type='text/css'><!--
@@ -84,7 +84,7 @@ body {
 --></style>
 <body>
 <div id='djangoForumBody'>
-<h1>{% block pagetitle %}Welcome to the Forums{% endblock %}</h1>
+<h1>{% block pagetitle %}{% trans "Welcome to the Forums" %}{% endblock %}</h1>
 <div id='djangoForumBreadcrumbs'><a href='/'>{% trans "Home" %}</a> &raquo; <a href='{% url forum_index %}'>{% trans "Forums" %}</a>{% block breadcrumbs %}{% endblock %}</div>
 {% block content %}{% endblock %}
 </div>

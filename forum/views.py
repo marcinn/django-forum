@@ -39,7 +39,7 @@ def forum(request, slug):
     except Forum.DoesNotExist:
         raise Http404
 
-    form = CreateThreadForm()
+    form = CreateThreadForm(forum=f)
     child_forums = f.child.for_groups(request.user.groups.all())
     return object_list( request,
                         queryset=f.thread_set.select_related().all(),
@@ -176,7 +176,7 @@ def reply(request, thread):
 
 
 @login_required
-def newthread(request, forum):
+def newthread(request, forum, extra_context=None):
     """
     Rudimentary post function - this should probably use 
     newforms, although not sure how that goes when we're updating 
@@ -190,7 +190,7 @@ def newthread(request, forum):
         return HttpResponseForbidden()
 
     if request.method == 'POST':
-        form = CreateThreadForm(request.POST)
+        form = CreateThreadForm(forum=f, data=request.POST)
         if form.is_valid():
             t = Thread(
                 forum=f,
@@ -214,13 +214,15 @@ def newthread(request, forum):
                 s.save()
             return HttpResponseRedirect(t.get_absolute_url())
     else:
-        form = CreateThreadForm()
+        form = CreateThreadForm(forum=f)
+
+    ctx = extra_context or {}
+    ctx.update({'form': form,
+        'forum': f,
+        })
 
     return render_to_response('forum/newthread.html',
-        RequestContext(request, {
-            'form': form,
-            'forum': f,
-        }))
+        ctx, RequestContext(request))
 
 def updatesubs(request):
     """

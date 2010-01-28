@@ -15,9 +15,10 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.views.generic.list_detail import object_list
+from django.contrib.auth.decorators import login_required
 
 from forum.models import Forum,Thread,Post,Subscription
-from forum.forms import CreateThreadForm, ReplyForm
+from forum.forms import CreateThreadForm, ReplyForm, EditPost
 
 FORUM_PAGINATION = getattr(settings, 'FORUM_PAGINATION', 10)
 LOGIN_URL = getattr(settings, 'LOGIN_URL', '/accounts/login/')
@@ -96,13 +97,13 @@ def thread(request, thread):
                             'form': form,
                         })
 
+
+@login_required
 def reply(request, thread):
     """
     If a thread isn't closed, and the user is logged in, post a reply
     to a thread. Note we don't have "nested" replies at this stage.
     """
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('%s?next=%s' % (LOGIN_URL, request.path))
     t = get_object_or_404(Thread, pk=thread)
     if t.closed:
         return HttpResponseServerError()
@@ -174,6 +175,7 @@ def reply(request, thread):
         }))
 
 
+@login_required
 def newthread(request, forum):
     """
     Rudimentary post function - this should probably use 
@@ -182,9 +184,6 @@ def newthread(request, forum):
 
     Only allows a user to post if they're logged in.
     """
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('%s?next=%s' % (LOGIN_URL, request.path))
-
     f = get_object_or_404(Forum, slug=forum)
     
     if not Forum.objects.has_access(f, request.user.groups.all()):
@@ -246,3 +245,30 @@ def updatesubs(request):
             'next': request.GET.get('next')
         }))
        
+
+@login_required
+def edit_post(request, id, thread=None, form_class=None, 
+        template_name=None, extra_context=None):
+
+    post = get_object_or_404(Post, id=id, thread__id=thread)
+    form_class = form_class or EditPost
+
+    if not request.user == post.author:
+        raise Http404
+
+    if request.method == 'POST':
+        form = form_class(data=request.POST, instance=post)
+        if form.is_valid():
+            post = form.save()
+            return HttpResponseRedirect(post.thread.get_absolute_url())
+    else:
+        form = form_class(instance=post)
+    
+
+    ctx = extra_context or {}
+    ctx.update({'form': form,
+        'post': post,
+        })
+
+    return render_to_response(template_name or 'forum/post_edit.html',
+        ctx, RequestContext(request))

@@ -32,6 +32,7 @@ urlpatterns = patterns('',
 
     url(r'^thread/(?P<thread>[0-9]+)/$', 'forum.views.thread', name='forum_view_thread'),
     url(r'^thread/(?P<thread>[0-9]+)/reply/$', 'forum.views.reply', name='forum_reply_thread'),
+    url(r'^thread/(?P<thread>[0-9]+)/post/(?P<id>[0-9]+)/edit/$', 'forum.views.edit_post', name='forum_edit_post'),
 
     url(r'^subscriptions/$', 'forum.views.updatesubs', name='forum_subscriptions'),
 

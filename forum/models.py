@@ -219,6 +219,7 @@ class Post(models.Model):
     body = models.TextField(_("Body"))
     body_html = models.TextField(editable=False)
     time = models.DateTimeField(_("Time"), blank=True, null=True)
+    edited_at = models.DateTimeField(_('Edit time'), blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False):
         if not self.id:

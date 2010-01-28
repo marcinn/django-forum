@@ -99,7 +99,7 @@ def thread(request, thread):
 
 
 @login_required
-def reply(request, thread):
+def reply(request, thread, extra_context=None):
     """
     If a thread isn't closed, and the user is logged in, post a reply
     to a thread. Note we don't have "nested" replies at this stage.
@@ -110,8 +110,12 @@ def reply(request, thread):
     if not Forum.objects.has_access(t.forum, request.user.groups.all()):
         return HttpResponseForbidden()
 
+    preview = False
+    p = None
+
     if request.method == "POST":
         form = ReplyForm(request.POST)
+        preview = request.POST.get('preview')
         if form.is_valid():
             body = form.cleaned_data['body']
             p = Post(
@@ -120,21 +124,24 @@ def reply(request, thread):
                 body=body,
                 time=datetime.now(),
                 )
-            p.save()
+            if not preview:
+                p.save()
 
-            sub = Subscription.objects.filter(thread=t, author=request.user)
-            if form.cleaned_data.get('subscribe',False):
-                if not sub:
-                    s = Subscription(
-                        author=request.user,
-                        thread=t
-                        )
-                    s.save()
-            else:
-                if sub:
-                    sub.delete()
+                sub = Subscription.objects.filter(thread=t, author=request.user)
+                if form.cleaned_data.get('subscribe',False):
+                    if not sub:
+                        s = Subscription(
+                            author=request.user,
+                            thread=t
+                            )
+                        s.save()
+                else:
+                    if sub:
+                        sub.delete()
 
-            if t.subscription_set.count() > 0:
+            # this needs refactorings
+
+            if not preview and t.subscription_set.count() > 0:
                 # Subscriptions are updated now send mail to all the authors subscribed in
                 # this thread.
                 mail_subject = ''
@@ -163,7 +170,8 @@ def reply(request, thread):
                         bcc=[s.author.email for s in t.subscription_set.all()],)
                 email.send(fail_silently=True)
 
-            return HttpResponseRedirect(p.get_absolute_url())
+            if not preview:
+                return HttpResponseRedirect(p.get_absolute_url())
     else:
         form = ReplyForm()
     
@@ -171,6 +179,8 @@ def reply(request, thread):
         RequestContext(request, {
             'form': form,
             'forum': t.forum,
+            'post': p,
+            'preview': preview,
             'thread': t,
         }))
 
@@ -251,6 +261,9 @@ def updatesubs(request):
 @login_required
 def edit_post(request, id, thread=None, form_class=None, 
         template_name=None, extra_context=None):
+    """
+    edit existing post view
+    """
 
     post = get_object_or_404(Post, id=id, thread__id=thread)
     form_class = form_class or EditPost
@@ -258,11 +271,15 @@ def edit_post(request, id, thread=None, form_class=None,
     if not request.user == post.author:
         raise Http404
 
+    preview = False
+
     if request.method == 'POST':
+        preview = request.POST.get('preview', False)
         form = form_class(data=request.POST, instance=post)
         if form.is_valid():
-            post = form.save()
-            return HttpResponseRedirect(post.thread.get_absolute_url())
+            post = form.save(commit=not preview)
+            if not preview:
+                return HttpResponseRedirect(post.thread.get_absolute_url())
     else:
         form = form_class(instance=post)
     
@@ -270,6 +287,7 @@ def edit_post(request, id, thread=None, form_class=None,
     ctx = extra_context or {}
     ctx.update({'form': form,
         'post': post,
+        'preview': preview,
         })
 
     return render_to_response(template_name or 'forum/post_edit.html',

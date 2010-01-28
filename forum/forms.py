@@ -14,7 +14,7 @@ class ReplyForm(forms.Form):
 
 
 class EditPost(forms.ModelForm):
-    body = forms.CharField(label=_("Body"), widget=forms.Textarea(attrs={'rows':8, 'cols':50}))
+    body = forms.CharField(label=_("Body"), widget=forms.Textarea(attrs={'rows':18, 'cols':50}))
 
     class Meta:
         fields = ('body',)

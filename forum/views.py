@@ -116,14 +116,13 @@ def reply(request, thread, extra_context=None):
     if request.method == "POST":
         form = ReplyForm(request.POST)
         preview = request.POST.get('preview')
+        p = Post(
+            thread=t, 
+            author=request.user,
+            time=datetime.now(),
+            )
         if form.is_valid():
             body = form.cleaned_data['body']
-            p = Post(
-                thread=t, 
-                author=request.user,
-                body=body,
-                time=datetime.now(),
-                )
             if not preview:
                 p.save()
 

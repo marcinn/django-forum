@@ -1,0 +1,14 @@
+{% extends "forum_base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Delete post?" %}</h2>
+<form method='post' action="" style="display: inline;">
+    <input type="hidden" name="confirm" value="1" />
+    {{ post.body_html|safe }}
+<input type='submit' value='{% trans "Delete" %}' />
+</form>
+<form method="get" action="{{ post.thread.get_absolute_url }}" style="display: inline;">
+<input type='submit' value='{% trans "Cancel" %}' />
+</form>
+{% endblock %}

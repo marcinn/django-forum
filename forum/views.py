@@ -122,7 +122,7 @@ def reply(request, thread, extra_context=None):
             time=datetime.now(),
             )
         if form.is_valid():
-            body = form.cleaned_data['body']
+            p.body = form.cleaned_data['body']
             if not preview:
                 p.save()
 
@@ -256,6 +256,24 @@ def updatesubs(request):
             'next': request.GET.get('next')
         }))
        
+@login_required
+def delete_post(request, id, thread, extra_context=None,
+        template_name=None):
+    post = get_object_or_404(Post, id=id, thread__id=thread)
+    if not request.user == post.author:
+        raise Http404
+    if request.method == 'POST' and request.POST.get('confirm'):
+        post.delete()
+        request.user.message_set.create(message=_('Deleted post'))
+        return HttpResponseRedirect(post.thread.get_absolute_url())
+
+    ctx = extra_context or {}
+    ctx['post'] = post
+
+    return render_to_response(template_name or 'forum/post_delete.html',
+            RequestContext(request, ctx))
+
+
 
 @login_required
 def edit_post(request, id, thread=None, form_class=None, 
